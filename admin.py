@@ -1,1 +1,0 @@
-/home/thomas/ModBot/modules/admin.py
