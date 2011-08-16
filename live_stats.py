@@ -5,14 +5,16 @@ from constants import *
 class Module():
   depends = ['logger']
   hooks = {'topicupdated': 'get_topic',
-           'irc_rpl_endofwho':'print_topic'}
-  commands = {'update':'print_topic'}
+           'irc_rpl_endofwho':'update_stats',
+           'irc_nick': 'update_stats',
+           'left': 'update_stats'}
+  commands = {'update':'update_stats'}
 
   def write_file(self):
     output = open('chan_output.htm', 'w')
     for channel in self.main.channels:
       self.logger.log(LOG_DEBUG, "Writing output for %s, topic %s" % (channel, self.topics[channel]))
-      output.write("Channel: %s\n<br />Topic: %s<br />\n<ul>\n" % (channel, self.topics[channel]))
+      output.write("<b>Channel:</b> %s\n<br /><b>Topic:</b> %s\n<br /><b>Users:</b>\n<ul>\n" % (channel, self.topics[channel]))
       for user in self.main.channels[channel]['users']:
         output.write("  <li>%s</li>\n" %(user))
       output.write("</ul>\n\n")
@@ -29,6 +31,7 @@ class Module():
     ftp.storlines('STOR chan_output.htm', output)
     ftp.close()
     output.close()
+    self.update_all = 0
     self.logger.log(LOG_INFO, "Done")
 
 
@@ -36,12 +39,12 @@ class Module():
     self.topics = {}
     self.repliesleft = 0
     self.update_all = 0
-    for my_channel in self.main.channels:
-      self.logger.log(LOG_DEBUG, "Getting topic from %s" % (my_channel))
-      self.main.topic(my_channel)
+    self.start = 1
+    self.update_stats('hack',self.main.channels.iterkeys().next(),'hack')
 
-  def print_topic(self, user, channel, args):
-    if user in self.main.channels[channel]['admins']:
+  def update_stats(self, user, channel, args):
+    if user in self.main.channels[channel]['admins'] or self.start:
+      self.start = 0
       self.update_all = 1
       self.repliesleft = len(self.main.channels)
       for my_channel in self.main.channels:
