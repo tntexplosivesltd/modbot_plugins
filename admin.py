@@ -2,8 +2,7 @@ from constants import *
 
 class Module():
   depends = ['logger']
-  hooks = {'nickchanged': 'me_renamed',
-           'irc_nick': 'renamed'}
+  hooks = {'nickchanged': 'me_renamed'}
   commands = {'nick': 'change_nick',
               'become': 'change_nick',
               'reg': 'identify',
@@ -27,9 +26,6 @@ class Module():
   def me_renamed(self, nick):
     self.logger.log(LOG_WARNING, "Nick changed to %s" % (nick))
     self.main.nickname = nick
-
-  def renamed(self, prefix, params):
-    self.logger.log(LOG_INFO, "%s, %s, %s" % (self, prefix, params))
 
   def identify(self, user, channel, args):
     if user in self.main.channels[channel]['admins']:
