@@ -24,8 +24,12 @@ class Module():
     self.update_all = 0
     ftp_server = 'whub25.webhostinghub.com'
     ftp_user = 'entropybot@entropy.net.nz'
+    passfile = open('password.txt','r')
+    password = passfile.readline()
+    passfile.close()
+    password = password.rstrip('\n')
     self.logger.log(LOG_INFO, "Connecting to FTP server %s, username %s" % (ftp_server, ftp_user))
-    ftp = FTP_TLS(ftp_server, ftp_user, 'lol400babies')
+    ftp = FTP_TLS(ftp_server, ftp_user, password)
     ftp.prot_p()
     self.logger.log(LOG_INFO, "Successfully logged in, storing file")
     ftp.storlines('STOR chan_output.htm', output)
