@@ -61,7 +61,7 @@ class Module():
         if args[0] in self.main.channels:
           my_channel = args[0]
           action = ' '.join(args[1:])
-          self.logger.log(LOG_WARNING, "%s is making me %s" % (user, action))
+          self.logger.log(LOG_WARNING, "%s: * %s %s" % (user, self.main.nickname, action))
           self.main.me(my_channel, action)
 
   def say(self, user, channel, args):
@@ -70,5 +70,5 @@ class Module():
         if args[0] in self.main.channels:
           my_channel = args[0]
           msg = ' '.join(args[1:])
-          self.logger.log(LOG_WARNING, "%s is making my say %s" % (user, msg))
+          self.logger.log(LOG_WARNING, "%s is making me say %s" % (user, msg))
           self.main.msg(my_channel, msg)
